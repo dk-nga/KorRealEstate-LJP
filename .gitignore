@@ -1,0 +1,8 @@
+
+# 포트 충돌로 전량 404 였던 실행 결과 — 재실행으로 대체됨
+results/_broken_404/
+
+# judge 항목은 재생성 가능 — 용량만 차지한다
+outputs/failure_judge_items.jsonl
+
+outputs/_*.txt
