@@ -37,6 +37,7 @@ scripts/
   analyze*.py, make_figures.py, audit_paper_numbers.py   paper tables and figures
   make_fig_signature.py   Figure 2 (aggregate vs paired effects, all four interventions)
   analyze_opus_swap.py    statute swap for claude-opus-5 on the 244 audited records
+  analyze_category.py     paired effects by subject category (appendix table)
 run_0.sh, run_1.sh    one queue per GPU for the open-weight suite
 ```
 
@@ -67,7 +68,7 @@ from existing files unless `--fresh` is given. Then:
 
 ```bash
 python scripts/analyze.py && python scripts/analyze_swap.py && python scripts/make_figures.py
-python scripts/make_fig_signature.py && python scripts/analyze_opus_swap.py
+python scripts/make_fig_signature.py && python scripts/analyze_opus_swap.py && python scripts/analyze_category.py
 ```
 
 Optional run notifications are sent only if `RESEND_API_KEY`, `NOTIFY_FROM` and
