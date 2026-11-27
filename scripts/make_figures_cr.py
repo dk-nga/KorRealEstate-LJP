@@ -295,10 +295,49 @@ def fig3(data):
   return dict(zip(MODELS, aurocs))
 
 
+def figA(data):
+  """Appendix figure: lower-court reasoning and listed provisions in the format of fig1 (a)/(b)."""
+  reason_pairs = [(f"no_reasoning__{st}__{lg}", f"with_reasoning__{st}__{lg}")
+                  for st in STAT for lg in ["ko", "en"]]
+  prov_pairs = [(f"{hr}__no_statute__{lg}", f"{hr}__statute_full__{lg}")
+                for hr in ["no_reasoning", "with_reasoning"] for lg in ["ko", "en"]]
+  MIN_N = 3000
+  fig, axes = plt.subplots(1, 2, figsize=(3.4, 2.3))
+  for ax, (pairs, title, sub) in zip(axes, [
+      (reason_pairs, "(a) Lower-court reasoning", "absent $\\rightarrow$ present"),
+      (prov_pairs, "(b) Listed provisions", "none $\\rightarrow$ cite+text")]):
+    ax.axvspan(-3, 3, color="0.92", zorder=0)
+    ax.axvline(0, color="0.5", lw=0.6, zorder=1)
+    for m in MODELS:
+      r = flip_and_delta(data, m, pairs)
+      if r is None:
+        continue
+      d, f, n = r
+      if n < MIN_N:
+        continue
+      ax.scatter(d * 100, f * 100, s=42, marker=MARK[m], color=COL[m], zorder=3,
+                 label=SHORT[m], edgecolors="white", linewidths=0.5)
+    ax.set_xlim(-7.5, 7.5)
+    ax.set_xlabel("$\\Delta$ accuracy (%p)")
+    ax.set_ylim(0, 40)
+    ax.set_title(f"{title}\n{sub}", fontsize=8)
+    ax.grid(alpha=0.25, lw=0.4)
+  axes[0].set_ylabel("verdicts changed (%)")
+  axes[1].tick_params(labelleft=False)
+  handles, labels = axes[0].get_legend_handles_labels()
+  fig.legend(handles, labels, loc="lower center", ncol=3, frameon=False,
+             fontsize=7, bbox_to_anchor=(0.5, -0.02), handletextpad=0.2, columnspacing=1.0)
+  fig.subplots_adjust(bottom=0.33, wspace=0.12)
+  for ext in ("pdf", "png"):
+    fig.savefig(os.path.join(FIGS, f"figA_reason_prov_cr.{ext}"))
+  plt.close(fig)
+
+
 def main():
   os.makedirs(FIGS, exist_ok=True)
   data = load()
   fig1(data)
+  figA(data)
   fig2(data)
   au = fig3(data)
   print("figures written to", FIGS)

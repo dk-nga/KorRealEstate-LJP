@@ -35,7 +35,7 @@ scripts/
   run_two_models.py, run_opus5.py   API runs on the 244 audited records
   make_swap.py        builds swap_map.json
   analyze*.py, make_figures.py, audit_paper_numbers.py   paper tables and figures
-  make_figures_cr.py      Figures 2, 3, 5 of the paper (make_figures.py with the paper's model names and %p labels)
+  make_figures_cr.py      Figures 2, 3, 5, 6 of the paper (make_figures.py with the paper's model names and %p labels)
   make_fig_signature_orig_style.py   appendix Figure 6 (lower-court reasoning, listed provisions); uses make_fig_signature.py
   analyze_opus_swap.py    statute swap for claude-opus-5 on the 244 audited records
   analyze_category.py     paired effects by subject category (appendix table)
