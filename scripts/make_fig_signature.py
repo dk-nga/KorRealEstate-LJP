@@ -1,7 +1,7 @@
 """Figure 2 (camera-ready): aggregate vs paired effects for all four interventions.
 
-Row 1: (a) translation ko->en, (b) statute swap target->donor, (c) swap drift vs reversal tendency
-Row 2: (d) lower-court reasoning absent->present, (e) listed provisions none->cite+text
+Body (fig1_flip_vs_delta_cr): (a) translation ko->en, (b) statute swap, (c) swap drift vs reversal tendency
+Appendix (figA_reason_prov_cr): (a) lower-court reasoning absent->present, (b) listed provisions none->cite+text
 
 x (a,b,d,e): case-level mean accuracy difference in %p (missing verdicts count as errors)
 y (a,b,d,e): share of complete pairs whose verdict changes (%)
@@ -136,20 +136,12 @@ def main():
                  for m in MODELS} for k in S} | {"p_rev": {SHORT[m]: PR[m] for m in MODELS}},
             open(os.path.join(BASE, "results", "_fig_signature_stats.json"), "w"), indent=1)
 
-  fig = plt.figure(figsize=(6.9, 4.9))
-  gs = fig.add_gridspec(2, 3, hspace=0.62, wspace=0.45)
-  ax_a = fig.add_subplot(gs[0, 0]); ax_b = fig.add_subplot(gs[0, 1], sharey=ax_a)
-  ax_c = fig.add_subplot(gs[0, 2])
-  ax_d = fig.add_subplot(gs[1, 0], sharey=ax_a); ax_e = fig.add_subplot(gs[1, 1], sharey=ax_a)
+  # Body figure: (a) translation, (b) swap, (c) swap drift -- one row, legend below
+  fig, (ax_a, ax_b, ax_c) = plt.subplots(1, 3, figsize=(6.9, 2.75), gridspec_kw={"wspace": 0.42})
   scatter_panel(ax_a, S["lang"], "(a) Translation\nKorean $\\rightarrow$ English")
   scatter_panel(ax_b, S["swap"], "(b) Statute swap\nown $\\rightarrow$ donor provisions")
-  scatter_panel(ax_d, S["reason"], "(d) Lower-court reasoning\nabsent $\\rightarrow$ present")
-  scatter_panel(ax_e, S["prov"], "(e) Listed provisions\nnone $\\rightarrow$ cite+text")
-  for ax in (ax_a, ax_d):
-    ax.set_ylabel("verdicts changed (%)")
-  for ax in (ax_b, ax_e):
-    plt.setp(ax.get_yticklabels(), visible=False)
-
+  ax_a.set_ylabel("verdicts changed (%)")
+  plt.setp(ax_b.get_yticklabels(), visible=False)
   ax = ax_c
   ax.axhline(0, color="0.5", lw=0.6); ax.axvline(0, color="0.5", lw=0.6)
   ax.fill_between([0, 0.4], 0, 8, color="0.92", zorder=0)
@@ -163,13 +155,25 @@ def main():
   ax.set_ylabel("net drift to Rev. (%p)", labelpad=1)
   ax.set_title("(c) Swap drift vs.\nreversal tendency")
   ax.grid(alpha=0.25, lw=0.4)
-
   h, l = ax_a.get_legend_handles_labels()
-  fig.legend(h, l, loc="center", bbox_to_anchor=(0.82, 0.27), frameon=False, ncol=1,
-             title="model", title_fontsize=8)
+  fig.legend(h, l, loc="lower center", bbox_to_anchor=(0.5, -0.17), frameon=False, ncol=5)
   for ext in ("pdf", "png"):
     fig.savefig(os.path.join(FIGS, f"fig1_flip_vs_delta_cr.{ext}"))
-  print("saved", os.path.join(FIGS, "fig1_flip_vs_delta_cr.pdf"))
+  plt.close(fig)
+
+  # Appendix figure: (a) lower-court reasoning, (b) listed provisions, same format
+  fig, (ax_d, ax_e) = plt.subplots(1, 2, figsize=(3.4, 2.6), sharey=True, gridspec_kw={"wspace": 0.12})
+  scatter_panel(ax_d, S["reason"], "(a) Lower-court reasoning\nabsent $\\rightarrow$ present")
+  scatter_panel(ax_e, S["prov"], "(b) Listed provisions\nnone $\\rightarrow$ cite+text")
+  for ax in (ax_d, ax_e):
+    ax.title.set_fontsize(7); ax.tick_params(labelsize=6.5); ax.xaxis.label.set_size(7)
+  ax_d.set_ylabel("verdicts changed (%)", fontsize=7)
+  h, l = ax_d.get_legend_handles_labels()
+  fig.legend(h, l, loc="lower center", bbox_to_anchor=(0.5, -0.2), frameon=False, ncol=3, fontsize=6.5)
+  for ext in ("pdf", "png"):
+    fig.savefig(os.path.join(FIGS, f"figA_reason_prov_cr.{ext}"))
+  plt.close(fig)
+  print("saved body + appendix figures")
 
 
 if __name__ == "__main__":
